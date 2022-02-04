@@ -1,0 +1,47 @@
+<style>
+ .comment{
+   height:40px;
+   width:490px;
+   border-bottom:0.5px solid rgba(37, 3, 3, 0.253);
+   margin-left:-40px;
+   margin-top:8px;
+ }
+
+ .commentcontent{
+   height:40px;
+   width:99%;
+   border:1px solid rgba(37, 33, 33, 0.301);
+   font-size:20px;
+   text-shadow:0.6px 0.6px black;
+ }
+.deletecomment{
+    text-decoration:none;
+    color:rgb(122, 6, 6);
+    text-shadow:0.3px 0.3px rgba(95, 95, 175, 0.678);
+    color:white;
+}
+.dcmt{
+    margin-left:450px;
+    margin-top:-18px;
+}
+.commenthead{
+    height:13px;
+    width:100%;
+    background-color:rgba(89, 103, 182, 0.651);
+    color:white;
+    margin-top:-2px;
+}
+
+</style>
+<li id="comment-<%= comment._id %>" class="comment">
+         <div class="commenthead">
+            <small class="commentuser">
+                <%= comment.user.name %>
+            </small>
+            <% if (locals.user && locals.user.id == comment.user.id){ %>
+                 <p class="dcmt"> <a class="deletecomment"  href="/comments/destroy/<%= comment.id %>">delete</a></p>  
+            <% } %>
+           </div>
+           <%= comment.content %>            
+
+</li>

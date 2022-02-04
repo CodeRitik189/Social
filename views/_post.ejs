@@ -1,0 +1,77 @@
+<style>
+ .posthead{
+   margin-top:-3px;
+   border-bottom: 1px solid rgba(37, 33, 33, 0.301);
+   background-color:rgba(72, 107, 172, 0.795);
+   color:white;
+ }
+ .postcontent{
+   height:70px;
+   width:99%;
+   border-bottom:1px solid rgba(37, 33, 33, 0.301);
+   font-size:20px;
+   text-shadow:0.6px 0.6px black;
+   color:rgba(191, 79, 206, 0.747);
+ }
+.deletepost{
+    margin-left:420px;
+    margin-top:-43px;
+}
+.deletepost a{
+    text-decoration:none;
+    color:white;
+    text-shadow:0.5px 0.5px rgba(95, 95, 175, 0.678);
+}
+.comments{
+    height:45%;
+    width:99%;
+    overflow:auto;
+    border-bottom:1px solid rgba(37, 33, 33, 0.301);
+}
+.comments::-webkit-scrollbar {
+  display: none;
+    }
+.addcmnt{
+  height:12%;
+  width:75%;
+}
+.addcmntbutton{
+    height:12%;
+    width:24%;
+    background-color:rgba(137, 137, 192, 0.507);
+}
+</style>
+
+<li id="post-<%= post._id %>" class="post">
+    <h4 class="posthead"> <%= post.user.name %> </h4>
+    <% if (locals.user && locals.user.id == post.user.id){ %>
+        <p class="deletepost">
+            <a class="anch"  href="/posts/destroy/<%= post.id %>">Delete</a>
+        </p>
+     <% } %>
+    <p class="postcontent">
+        <%= post.content %>
+    </p>
+    <div class="comments">
+        <ul id="post-comments-<%= post._id %>">
+            <% for (comment of post.comments){%>
+
+                <%- include('_comment') -%>
+                
+            
+            <%} %>
+        </ul>
+    </div>
+    <div class="post-comments">
+        <% if (locals.user){ %>
+            <!-- let's give an id to the new comment form, we'll also need to make the same changes in home_posts.js where we're adding a post to the page -->
+            <form id="post-<%= post._id %>-comments-form"  action="/comments/create" method="POST">
+                <input class="addcmnt" type="text" name="content" placeholder="Type Here to add comment..." required>
+                <input type="hidden" name="post" value="<%= post._id %>" >
+                <input class="addcmntbutton" type="submit" value="Add Comment">
+            </form>
+
+        <% } %>
+    </div>
+    
+</li>

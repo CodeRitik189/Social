@@ -1,0 +1,49 @@
+<header id="layout-header">
+    <nav>
+        <div class="mini-logo">
+            <p>
+                <a href='/'>
+                      Social
+                </a>
+            </p>
+        </div>
+    
+        <div class="auth-links">
+            <ul>
+                <% if (locals.user){ %>
+                <li>
+                    <a id="pf"href="/users/profile/<%= user.id %>"><%= user.name %></a>
+                </li>
+                <li>
+                    <a href="/">Feeds</a>
+                </li>
+                <li>
+                    <a id="chat" href="/chats?id=<%=user.name%>">Chats</a>
+                </li>
+                <li>
+                    <a href="/users/sign-out">Sign Out</a>
+                </li>
+                <% }else{ %>
+                <li>
+                    <a href="/users/sign-up">Sign Up</a>
+                </li>
+                <% } %>
+            </ul>
+        </div>
+    </nav>
+    <script src="/socket.io/socket.io.js"></script>
+    <scrip src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.1/howler.min.js"></script>
+    <script>  
+      var socket = io();
+      var pf = document.getElementById('pf').innerText;
+      var chat = document.getElementById('chat');
+      
+      socket.on( 'commented', function({ed1,ed2,val} ){
+          if(pf==ed2){
+            chat.innerHTML = "Chats(.)"
+            var audio = new Audio('mp3/iphone_notification.mp3');
+            audio.play();
+          }
+      });
+    </script>
+</header>

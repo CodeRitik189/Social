@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SocketIO Upvote</title>
+  <style>  
+   body{
+     background-color: rgb(39, 38, 82);
+   }
+   #box{
+     margin-top:-665px;
+     margin-left:250px;
+     height:600px;
+     width:600px;
+     border:1px solid black;
+     overflow:auto;
+    scrollbar-width:thin;
+   }
+   #online{
+     height: 600px;
+     width: 250px;
+     overflow:auto;
+     scrollbar-width:thin;
+     margin-top:-20px;
+     background-color:#8c7faf46;
+   }
+   #wrap{
+     height:600px;
+     width:850px;
+     margin-left:200px;
+     border:2px solid black;
+     border-radius:1%;
+     overflow:hidden;
+   }
+    .anch{
+            font-size: 20px;
+            text-decoration: none;
+      }
+      .listitem{
+            width:99%;
+            height:50px;
+            background-color: rgba(55, 39, 99, 0.863);
+            font-size: 20px;
+            margin-top:-19px;
+            color:white;
+      } 
+      .listheading{
+            width:99%;
+            height:53px;
+            background-color: rgb(40, 26, 78);
+            font-size: 23px;
+            color:white;
+      } 
+      .listitem:hover{
+           font-size:22px;
+           color:rgb(1, 1, 31);
+           background-color: rgba(8, 9, 77, 0.637);
+          
+        }
+        .listitem:hover:a{
+          font-size:23px;
+        }
+        .anch{
+          text-decoration: none;
+          color:white;
+        }
+    #place{
+     height:36px;
+     width:440px;
+     border: 1px solid black;
+    }
+   #send{
+     height:36px;
+     width:150px;
+     border: 1px solid black;
+     background-color: rgb(43, 43, 122);
+     color:white;
+   }
+   #msgs{
+     height:83%;
+     width:99%;
+     overflow:auto;
+     scrollbar-width:thin;
+   }
+   #msgs::-webkit-scrollbar {
+  display: none;
+    }
+
+    .container {
+      width: 80%;
+      margin: 1rem auto;
+    }
+    
+    .text-justify {
+      text-align: justify;
+    }
+    .left{
+       height:40px;
+       text-align:left;
+       padding-left: 4px;
+       background-color:rgba(227, 222, 230, 0.26);
+       font-size:23px;
+       margin-top:-7px;
+    }
+    .right{
+      height:40px;
+       text-align:right;
+       padding-right: 4px;
+       background-color:rgba(235, 229, 238, 0.315);
+       font-size:23px;
+       margin-top:-7px;
+    }
+    .center{
+       text-align: center;
+    }
+    #chatw{
+      height:10%;
+      width:99.5%;
+      font-size:35px;
+      background-color: rgb(42, 29, 80);
+      color:white;
+      border:1px solid black;
+    }
+    #innerbody{
+      background-color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="innerbody">
+  <div id="wrap">
+  <div id="online">
+    <p class="listheading" >Friends </p>
+  <%for(i of users){%>
+    <%if(i!=id1){%>
+    <p class="listitem" ><a class="anch" href="/createchat?id=<%=id1%>*<%=i%>"><%= i %></a> </p>
+     <%}%>
+    <%}%>
+  </div>
+    <p id="id1"><%= id1%> </p>
+    <p id="id2"><%= id2%></p>
+<div id="box">
+  <div id="chatw">
+    <%=id2 %>
+  </div>
+  <div id="msgs">
+    <%for(i of msgs[id1][id2]){%>
+     <%if(i[0]=="right"){ %>
+       <p class="<%=i[0]%>">you : <%= i[1] %></p>
+     <%}else if(i[0]=="left"){%>
+       <p class="<%=i[0]%>"><%= id2 %> : <%= i[1] %></p>
+      <%}else{%>
+        <p class="<%=i[0]%>">  <%= i[1] %></p>
+      <%}%>
+    <%}%>
+   <div id = "list">   
+   </div>
+  </div>
+  <div id="input">
+    <input id="place" placeholder="type/something" type="text" name="msg" required/>
+    <button id="send" type="submit">send</button>
+  </div>
+</div>
+</div>
+</div>
+  <script src="/socket.io/socket.io.js"></script>
+  <scrip src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.1/howler.min.js"></script>
+  <script>  
+    var socket = io();
+    var btn2 = document.getElementById( 'send' );
+    var online = document.getElementById( 'online' );
+    var id1 = document.getElementById('id1').innerText;
+    var id2 = document.getElementById('id2').innerText;
+    socket.on('userjoined',function( name){
+        var para = document.createElement("a");
+        para.innerHTML = name;
+        para.href= `/chat?id=${id1} ${name}`;
+        document.getElementById( 'online' ).appendChild(para);
+    });
+
+    btn2.addEventListener('click', function( e ) { 
+      let val =  document.getElementById( 'place' ).value;
+    // prevent page reloading
+      e.preventDefault();
+      console.log(val);
+      var audio = new Audio('mp3/beep_mp3.mp3');
+       audio.play();
+      socket.emit( 'message-send', {id1,id2,val});
+      document.getElementById( 'place' ).value="";
+    });
+    socket.on( 'message-typed', function({ed1,ed2,val} ){
+      if((id1==ed1&&id2==ed2)||(id1==ed2&&id2==ed1)){
+        var para = document.createElement("p");
+       if(id1==ed1){
+         para.className="right";
+         para.innerHTML = "you: "+val;
+       }else{
+         para.className="left";
+         para.innerHTML = id2+" : "+val;
+       }
+        document.getElementById('list').appendChild(para);
+        if(id1!=ed1){
+        var audio = new Audio('mp3/iphone_notification.mp3');
+        audio.play();
+        }
+        document.getElementById('list').scrollBy(0,50);
+      }
+    });
+    socket.on( 'message-typed', function({ed1,ed2,val} ){
+          if(pf==ed2){
+            chat.innerHTML = "Chats"
+          }
+      });
+  </script>
+</body>
+</html>

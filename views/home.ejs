@@ -1,0 +1,201 @@
+<link rel="stylesheet" href="/css/home.css">
+<style>
+    .post{
+        height:300px;
+        width:500px;
+        border: 2px solid black;
+        margin-left:-50px;
+        margin-top:30px;
+        box-shadow:5px 5px rgba(68, 68, 51, 0.685);
+    }
+    #feed-posts{
+       margin-left:200px;
+    }
+    #homelogin{
+        box-shadow: 10px 10px rgb(39, 39, 119);
+        height:600px;
+        width:500px;
+        margin-left:200px;
+        border:3px solid black;
+        margin-top:20px;
+    }
+    #homeabout{
+        box-shadow: 10px 10px rgb(39, 39, 119);
+        height:600px;
+        width:500px;
+        margin:auto;
+        border:3px solid black;
+    }
+    #homeabout p{
+        text-shadow: 1px 1px rgb(39, 39, 119);
+        font-size:30px;
+    }
+    
+    .loginlist{
+        height:60px;
+        width:400px;
+        margin:auto;
+        margin-top:20px;
+        font-size:40px;
+        text-decoration: none;
+    }
+    .loginput{
+        height:60px;
+        width:400px;
+    }
+    .signup{
+       margin-left:50px;
+       height:60px;
+       width:400px;
+       background-color:rgba(71, 70, 145, 0.589);
+       text-decoration: none;
+       font-size:25px;
+       color:white;
+    }
+    #gosignup{
+        text-decoration: none;
+        text-align: center;
+        text-shadow:0.5px 0.5px rgb(132, 132, 168);
+        margin-top:10px;
+    }
+    .enter{
+       font-size:25px;
+       margin-left:60px;
+       text-shadow: 1px 1px rgb(39, 39, 119);
+    }
+    #new-post-form{
+        height:60px;
+        width:350px;
+        border:1px solid black;
+        box-shadow:5px 5px blue;
+    }
+    #new-post-form-text{
+        height:60px;
+        width:350px;
+    }
+    #sub{
+        margin-left:360px;
+        margin-top:-60px;
+        height:65px;
+        width:130px;
+        background-color:rgba(137, 137, 192, 0.507);
+    }
+    #log{
+        background-color:rgba(137, 137, 192, 0.507);
+        color:white;
+        font-size:24px;
+        text-shadow:0.5px 0.5px rgb(132, 132, 168);
+    }
+     .anch{
+            font-size: 22px;
+            text-decoration: none;
+            margin-left:20px;
+      }
+      .listitem{
+            width:170px;
+            height:40px;
+            background-color: rgba(55, 39, 99, 0.582);
+            font-size: 20px;
+            margin-top:-19px;
+            color:white;
+            border-radius:6%;
+      } 
+      .listheading{
+            width:170px;
+            height:45px;
+            background-color: rgb(40, 26, 78);
+            font-size: 23px;
+            color:white;
+            border-radius:5%;
+      } 
+      .listitem:hover{
+           font-size:22px;
+           color:rgb(1, 1, 31);
+           background-color: rgba(8, 9, 77, 0.637);
+          
+        }
+        .listitem:hover:a{
+          font-size:23px;
+        }
+        .anch{
+          text-decoration: none;
+          color:white;
+        }
+        #posts-list-container ul{
+            list-style-type:none;
+        }
+</style>
+<div id="home-container">
+    <% if(locals.user){ %>
+    <section id="feed-posts">
+            <h2>Create Your Own Post</h2>
+            <form action="/posts/create" id="new-post-form" method="POST">
+                <input id="new-post-form-text" name="content" cols="30" rows="3" placeholder="Type Here..." required></input>
+                <input id="sub" type="submit" value="Post">
+            </form>
+            <div id="posts-list-container">
+                <ul>
+                    <% for(post of posts){ %>
+                        
+                    <%- include('_post') -%>
+                        
+                    <%} %>
+                </ul>
+            </div>
+        </section>
+        <style>
+            #user-friends{
+                margin-left:900px;
+                position:fixed;
+            }
+        </style>
+        
+        <section id="user-friends">
+            <h4 class="listheading">Users' Profiles</h4>
+            <% for(u of all_users){%>
+                <p class="listitem">
+                    <a class="anch" href="/users/profile/<%= u.id %>"><%= u.name %></a>
+                </p>
+            <% } %>
+        </section>
+        <% } else {%>
+        <div id="homelogin">
+            <p class="loginlist">Welcome To Social</p>
+
+        <form action="/users/create-session" method="POST">
+         <p class="enter">Enter Email</p>
+         <p class="loginlist"><input class="loginput" type="email" name="email" placeholder="Email"  required></p>
+         <p class="enter">Enter Password</p>
+         <p  class="loginlist"><input class="loginput" type="password" name="password" placeholder="Password"  required></p>
+         <p class="loginlist"><input id="log" class="loginput" type="submit" value="Login"></p>
+        </form>
+        <a id="gosignup" href="/users/sign-up"> <p class="signup">Create Account</p></a>
+    </div>
+    <section id="homeabout">
+       <h1 style="font-size:30px;">About Social</h1>
+       <p>
+           Social is a Web Application where users can share their 
+           thoughts using posts and Comments , socail provides a 
+           User to User chatting system which makes the application 
+           wonderful to use
+            <br>          ---Developed By                    
+            <br>        ----Ritik Tripathi
+       </p>
+    </section>
+   <%}%>
+</div>
+
+<!-- importing this script for creating the comments -->
+
+<script src="/js/home_post_comments.js" ></script>
+<script src="/js/home_posts.js"></script>
+<script>
+    var id1 = document.getElementById('new-post-form-text');
+    var id2 = document.getElementById('sub');
+    id2.addEventListener('click',function(){
+      //  console.log("value is",id1.value);
+       // id1.value="";
+       // id1.placeholder="type/here";
+    });
+</script>
+
